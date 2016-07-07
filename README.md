@@ -117,3 +117,14 @@ sidekiq_demo_job:
 3. 因為在你的電腦每個專案的 sidekiq 都會使用同一個 redis，所以如果你之前有用過 sidekiq-cron，可能會在 Web UI 的 Cron 裡面發現之前的 worker，請先把它們刪除再測試，不然在 sidekiq server 會出現找不到 worker 的錯誤。
 4. 在 Cron 的 UI 裡面有一個 `EnqueueNow` 的按鈕可以手動執行 Worker ，可以很方便的測試 Cron job
 5. 自己測看看吧。
+
+# 一個簡單的實際運用範例
+
+### 情境
+
+假設我們有一個 Product Model，擁有 title 跟 image 這兩個欄位，當使用者增加 product 時 可以上傳一張圖片，Server 會將這張圖片壓縮成指定的大小，不過不可能讓使用者等待圖片壓縮完成後才能繼續瀏覽網頁，這樣會讓使用者體驗很差，因此我們要增加一個背景工作讓 Server 有空的時候可以執行這項任務。
+
+### demo
+
+1. `$ rails g scaffold product title image`
+2. `$ rake db:migrate`
