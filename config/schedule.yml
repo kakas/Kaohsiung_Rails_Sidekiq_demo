@@ -1,0 +1,4 @@
+sidekiq_demo_job:
+  cron: "*/1 * * * *"
+  class: "MyTestWorker" # 需對應到你的 worker
+  queue: default        # 優先權設定，詳細請看官網說明
