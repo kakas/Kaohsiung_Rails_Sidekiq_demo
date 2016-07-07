@@ -128,3 +128,38 @@ sidekiq_demo_job:
 
 1. `$ rails g scaffold product title image`
 2. `$ rake db:migrate`
+3. 增加一個圖片壓縮的 worker
+
+workers/image_compress_worker.rb
+
+```ruby
+class ImageCompressWorker
+  include Sidekiq::Worker
+
+  def perform(product_id)
+    @product = Product.find(product_id)
+
+    puts "執行#{@product.title}的圖片壓縮工作"
+    puts "#{@product.title}的圖片壓縮工作已經完成"
+  end
+end
+```
+
+4. 當新增或修改產品後自動增加圖片壓縮的 worker
+
+models/product.rb
+
+```ruby
+class Product < ActiveRecord::Base
+
+  after_commit :compress_image
+
+  def compress_image
+    ImageCompressWorker.perform_async(id)
+  end
+
+end
+```
+
+5. 請自行測試，記得每次改完 worker 後要重開 sidekiq server
+6. 另外，沒辦法傳 ActiveRecord 的物件給 worker，所以這邊只能傳 product 的 id 給worker，如果你想傳 ActiveRecord 的物件，可以試試看用 ActiveJob（[Active Job · mperham/sidekiq Wiki](https://github.com/mperham/sidekiq/wiki/Active-Job)）
