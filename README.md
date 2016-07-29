@@ -43,6 +43,9 @@ end
 3. 增加工作給 sidekiq，`> MyTestWorker.perform_async`
 4. 如下所示，sidekiq server 有印出 `do something` 表示成功
 
+PS：如果出現`NameError: uninitialized constant xxxxxxxxxxx` 除了你打錯字以外，也可能是 spring cache 機制卡住了
+試試看執行 `$ spring restart` 再重開 rails console 試試看。
+
 #### rails console
 ```
 Loading development environment (Rails 4.2.3)
